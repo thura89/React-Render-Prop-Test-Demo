@@ -9,12 +9,12 @@ const products = Array.from({ length: 20 }, () => {
   };
 });
 
-// const companies = Array.from({ length: 15 }, () => {
-//   return {
-//     companyName: faker.company.name(),
-//     phrase: faker.company.catchPhrase(),
-//   };
-// });
+const companies = Array.from({ length: 15 }, () => {
+  return {
+    companyName: faker.company.name(),
+    phrase: faker.company.catchPhrase(),
+  };
+});
 
 function ProductItem({ product }) {
   return (
@@ -26,26 +26,26 @@ function ProductItem({ product }) {
   );
 }
 
-// function CompanyItem({ company, defaultVisibility }) {
-//   const [isVisible, setIsVisisble] = useState(defaultVisibility);
+function CompanyItem({ company, defaultVisibility }) {
+  const [isVisible, setIsVisisble] = useState(defaultVisibility);
 
-//   return (
-//     <li
-//       className="company"
-//       onMouseEnter={() => setIsVisisble(true)}
-//       onMouseLeave={() => setIsVisisble(false)}
-//     >
-//       <p className="company-name">{company.companyName}</p>
-//       {isVisible && (
-//         <p className="company-phrase">
-//           <strong>About:</strong> {company.phrase}
-//         </p>
-//       )}
-//     </li>
-//   );
-// }
+  return (
+    <li
+      className="company"
+      onMouseEnter={() => setIsVisisble(true)}
+      onMouseLeave={() => setIsVisisble(false)}
+    >
+      <p className="company-name">{company.companyName}</p>
+      {isVisible && (
+        <p className="company-phrase">
+          <strong>About:</strong> {company.phrase}
+        </p>
+      )}
+    </li>
+  );
+}
 
-function List({ title, items }) {
+function List({ title, items, render }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -64,13 +64,7 @@ function List({ title, items }) {
           {isOpen ? <span>&or;</span> : <span>&and;</span>}
         </button>
       </div>
-      {isOpen && (
-        <ul className="list">
-          {displayItems.map((product) => (
-            <ProductItem key={product.productName} product={product} />
-          ))}
-        </ul>
-      )}
+      {isOpen && <ul className="list">{displayItems.map(render)}</ul>}
 
       <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
         {isCollapsed ? `Show all ${items.length}` : "Show less"}
@@ -85,7 +79,24 @@ export default function App() {
       <h1>Render Props Test Demo</h1>
 
       <div className="col-2">
-        <List title="Products" items={products} />
+        <List
+          title="Products"
+          items={products}
+          render={(product) => (
+            <ProductItem key={product.productName} product={product} />
+          )}
+        />
+        <List
+          title="Company"
+          items={companies}
+          render={(company) => (
+            <CompanyItem
+              key={company.companyName}
+              company={company}
+              defaultVisibility={false}
+            />
+          )}
+        />
       </div>
     </div>
   );
